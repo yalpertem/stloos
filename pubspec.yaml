@@ -32,3 +32,7 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+  assets:
+    - assets/image1.jpeg
+    - assets/image2.jpeg
+    - assets/image3.jpeg
