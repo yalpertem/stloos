@@ -74,10 +74,12 @@ jobs:
       - name: Export IPA
         run: |
           cd ios
+          security unlock-keychain -p "" signing_temp.keychain
           xcodebuild -exportArchive \
                      -archivePath build/Runner.xcarchive \
                      -exportPath build \
-                     -exportOptionsPlist ExportOptions.plist
+                     -exportOptionsPlist ExportOptions.plist \
+                     OTHER_CODE_SIGN_FLAGS="--keychain signing_temp.keychain"
 
       - name: Upload to App Store Connect
         uses: Apple-Actions/upload-testflight-build@v1
