@@ -66,7 +66,24 @@ jobs:
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
           echo ""
           echo "Searching for App Store profile:"
-          security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | grep -E "TeamName|Name|UUID|application-identifier" || true
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            echo "Profile: $profile"
+            security cms -D -i "$profile" 2>/dev/null | grep -E "TeamName|Name|UUID|application-identifier" || true
+            echo "---"
+          done
+          
+      - name: Extract provisioning profile UUID
+        id: get_profile
+        run: |
+          # Find the App Store provisioning profile UUID
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if security cms -D -i "$profile" 2>/dev/null | grep -q "stloos is an app documenting the streets ios_app_store"; then
+              UUID=$(security cms -D -i "$profile" 2>/dev/null | grep -A1 "UUID" | grep -o "[A-Z0-9]\{8\}-[A-Z0-9]\{4\}-[A-Z0-9]\{4\}-[A-Z0-9]\{4\}-[A-Z0-9]\{12\}")
+              echo "Found App Store profile UUID: $UUID"
+              echo "profile_uuid=$UUID" >> $GITHUB_OUTPUT
+              break
+            fi
+          done
 
       - name: Archive iOS App
         run: |
@@ -91,13 +108,44 @@ jobs:
           security unlock-keychain -p "" signing_temp.keychain
           security set-keychain-settings -t 3600 -u signing_temp.keychain
           
+      - name: Create dynamic ExportOptions.plist
+        run: |
+          cd ios
+          cat > DynamicExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>teamID</key>
+              <string>H9XZUWW22W</string>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>compileBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>signingCertificate</key>
+              <string>Apple Development</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.yalpertem.stloos</key>
+                  <string>${{ steps.get_profile.outputs.profile_uuid }}</string>
+              </dict>
+          </dict>
+          </plist>
+          EOF
+          
       - name: Export IPA
         run: |
           cd ios
           xcodebuild -exportArchive \
                      -archivePath build/Runner.xcarchive \
                      -exportPath build \
-                     -exportOptionsPlist ExportOptions.plist \
+                     -exportOptionsPlist DynamicExportOptions.plist \
                      -allowProvisioningUpdates
 
       - name: Upload to App Store Connect
