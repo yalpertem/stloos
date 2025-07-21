@@ -67,6 +67,7 @@ jobs:
                      -destination generic/platform=iOS \
                      -archivePath build/Runner.xcarchive \
                      -allowProvisioningUpdates \
+                     DEVELOPMENT_TEAM=H9XZUWW22W \
                      CODE_SIGN_STYLE=Automatic \
                      archive
 
