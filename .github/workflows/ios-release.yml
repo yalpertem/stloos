@@ -66,6 +66,8 @@ jobs:
                      -configuration Release \
                      -destination generic/platform=iOS \
                      -archivePath build/Runner.xcarchive \
+                     -allowProvisioningUpdates \
+                     CODE_SIGN_STYLE=Automatic \
                      archive
 
       - name: Export IPA
