@@ -30,12 +30,12 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           children: [
             // Ortalanmış başlık
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
                   'shittheyleaveonourstreets',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
