@@ -71,6 +71,8 @@ jobs:
       - name: Archive iOS App
         run: |
           cd ios
+          security list-keychains -d user -s signing_temp.keychain login.keychain
+          security unlock-keychain -p "" signing_temp.keychain
           xcodebuild -workspace Runner.xcworkspace \
                      -scheme Runner \
                      -configuration Release \
@@ -79,11 +81,12 @@ jobs:
                      -allowProvisioningUpdates \
                      DEVELOPMENT_TEAM=H9XZUWW22W \
                      CODE_SIGN_STYLE=Automatic \
+                     OTHER_CODE_SIGN_FLAGS="--keychain signing_temp.keychain" \
                      archive
 
       - name: Configure keychain for export
         run: |
-          security list-keychains -s signing_temp.keychain
+          security list-keychains -s signing_temp.keychain login.keychain
           security default-keychain -s signing_temp.keychain
           security unlock-keychain -p "" signing_temp.keychain
           security set-keychain-settings -t 3600 -u signing_temp.keychain
