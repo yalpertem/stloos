@@ -87,10 +87,20 @@ The app uses a simple single-file architecture:
 ### Required Secrets for iOS Deployment
 Set these in GitHub repository settings:
 - `IOS_DISTRIBUTION_CERT_BASE64`: Base64 encoded iOS distribution certificate (.p12)
+  ```bash
+  base64 -i Certificates.p12 | pbcopy
+  ```
 - `IOS_DISTRIBUTION_CERT_PASSWORD`: Password for the distribution certificate
 - `APPSTORE_ISSUER_ID`: App Store Connect API issuer ID
 - `APPSTORE_KEY_ID`: App Store Connect API key ID  
-- `APPSTORE_PRIVATE_KEY`: App Store Connect API private key (.p8 content)
+- `APPSTORE_PRIVATE_KEY`: App Store Connect API private key content (NOT base64 encoded)
+  - Copy the ENTIRE content of your .p8 file including the header and footer:
+    ```
+    -----BEGIN PRIVATE KEY-----
+    [Your key content here]
+    -----END PRIVATE KEY-----
+    ```
+  - Make sure to preserve line breaks when adding to GitHub secrets
 
 ## Development Notes
 
