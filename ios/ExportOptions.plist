@@ -14,10 +14,5 @@
     <true/>
     <key>signingStyle</key>
     <string>automatic</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>com.yalpertem.stloos</key>
-        <string>stloos is an app documenting the streets ios_app_store 1753119568</string>
-    </dict>
 </dict>
 </plist>
