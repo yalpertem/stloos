@@ -52,6 +52,23 @@ flutter pub get
 ```bash
 # Reset local Supabase database (applies migrations and seeds)
 supabase db reset --local
+
+# Stop and start Supabase services
+supabase stop
+supabase start
+```
+
+### Network Configuration
+The app is configured to work on both local (web/desktop) and mobile devices:
+
+- **Web/Desktop**: Uses `127.0.0.1:54321` (localhost)
+- **Mobile devices**: Uses `192.168.0.192:54321` (network IP)
+
+**Important**: If your Mac's IP address changes, update the `_networkHost` constant in `lib/config.dart`.
+
+To find your current IP address:
+```bash
+ifconfig | grep "inet " | grep -v 127.0.0.1
 ```
 
 ### SQL Linting and Formatting
