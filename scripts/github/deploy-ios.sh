@@ -8,6 +8,17 @@
 #STORE_PRIVATE_KEY
 #APP_STORE_CONNECT_API_KEY
 
+# Check required environment variables
+required_vars=("BUILD_CERTIFICATE_BASE64" "P12_PASSWORD" "BUILD_PROVISION_PROFILE_BASE64" "KEYCHAIN_PASSWORD" "STORE_PRIVATE_KEY" "APP_STORE_CONNECT_API_KEY" "APP_STORE_CONNECT_ISSUER_ID")
+for var in "${required_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+        echo "Error: Required environment variable $var is not set"
+        echo "This script requires the following environment variables:"
+        printf '%s\n' "${required_vars[@]}"
+        exit 1
+    fi
+done
+
 # Install the provisioning profile
 # create variables
 CERTIFICATE_PATH=build_certificate.p12
