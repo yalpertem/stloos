@@ -72,13 +72,16 @@ cat ios/Runner.xcodeproj/project.pbxproj | grep -A 5 -B 5 "CODE_SIGN"
 echo "Current keychain list:"
 security list-keychains -d user
 
-# Build IOS Release with xcodebuild arguments to override code signing
-echo "Building IPA with xcodebuild code signing override..."
+# Set environment variables to override code signing
+export CODE_SIGN_IDENTITY="Apple Distribution"
+export PROVISIONING_PROFILE_SPECIFIER="a7326452-a57c-4482-b96c-7e0f81dc8ee9"
+export DEVELOPMENT_TEAM="H9XZUWW22W"
+
+# Build IOS Release with environment variable overrides
+echo "Building IPA with environment variable code signing override..."
 flutter build ipa --export-options-plist=ios/ExportOptions.plist --verbose \
   --build-name=1.0.0 \
-  --build-number=3 \
-  --xcodebuild-arg="CODE_SIGN_IDENTITY=Apple Distribution" \
-  --xcodebuild-arg="PROVISIONING_PROFILE_SPECIFIER=a7326452-a57c-4482-b96c-7e0f81dc8ee9"
+  --build-number=3
 
 # Check if IPA was created
 if [ ! -f build/ios/ipa/*.ipa ]; then
