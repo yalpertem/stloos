@@ -46,3 +46,33 @@ lib/**/*.g.dart
 build
 
 ios/Podfile.lock
+
+# iOS/Xcode specific files that shouldn't be tracked
+ios/Runner.xcworkspace/xcuserdata/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/.last_build_id
+
+# Flutter generated files
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Generated.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Runner/GeneratedPluginRegistrant.m
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+# Xcode project files that change frequently
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcworkspace/contents.xcworkspacedata
+
+# Supabase local development files
+supabase/.temp/
+supabase/logs/
+supabase/.branches/
+
+# Python environment files for development tools
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/

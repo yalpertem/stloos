@@ -1,0 +1,32 @@
+[sqlfluff]
+dialect = postgres
+
+[sqlfluff:templater]
+templater = raw
+
+[sqlfluff:indentation]
+indented_joins = false
+indented_using_on = true
+template_blocks_indent = true
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+line_position = trailing
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.literals]
+capitalisation_policy = lower
+
+[sqlfluff:rules:ambiguous.join]
+fully_qualify_join_types = outer
+
+[sqlfluff:rules:ambiguous.column_references]
+group_by_and_order_by_style = explicit

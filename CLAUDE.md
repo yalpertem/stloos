@@ -48,6 +48,28 @@ flutter clean
 flutter pub get
 ```
 
+### Database Management
+```bash
+# Reset local Supabase database (applies migrations and seeds)
+supabase db reset --local
+```
+
+### SQL Linting and Formatting
+```bash
+# Install development dependencies (sqlfluff, pre-commit)
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run sqlfluff on SQL files manually
+sqlfluff lint supabase/migrations/*.sql --dialect postgres
+sqlfluff fix supabase/migrations/*.sql --dialect postgres
+
+# Run pre-commit hooks manually
+pre-commit run --all-files
+```
+
 ## Architecture
 
 ### Project Structure
