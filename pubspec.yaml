@@ -24,17 +24,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/image1.jpeg
-    - assets/image2.jpeg
-    - assets/image3.jpeg
-    - assets/image4.jpeg
-    - assets/image5.jpeg
-    - assets/image6.jpeg
-    - assets/image7.jpeg
-    - assets/image8.jpeg
-    - assets/image9.jpeg
-    - assets/image10.jpeg
-    - assets/image11.jpeg
-    - assets/image12.jpeg
     - .env.local
     - .env.production

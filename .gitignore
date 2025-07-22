@@ -80,3 +80,5 @@ venv/
 # Environment files - exclude from version control
 .env*
 !.env.production
+
+node_modules/

@@ -9,4 +9,7 @@ class AppConfig {
   
   /// Get the current platform info for debugging
   static String get platformInfo => Env.platformInfo;
+  
+  /// Returns the image base URL from environment
+  static String get imageBaseUrl => Env.imageBaseUrl;
 }

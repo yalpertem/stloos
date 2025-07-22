@@ -108,6 +108,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  String _buildImageUrl(String path) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    
+    final baseUrl = AppConfig.imageBaseUrl;
+    if (baseUrl.isEmpty) {
+      return path;
+    }
+    
+    return '$baseUrl$path';
+  }
+
   Widget _buildPaginationControls() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -223,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.network(
-                      image['url'],
+                      _buildImageUrl(image['path']),
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return SizedBox(
