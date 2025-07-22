@@ -15,16 +15,6 @@ jobs:
         with:
           channel: stable
 
-      - name: Create Client Dotenv
-        run: |
-          echo "
-          SUPABASE_URL=${SUPABASE_URL:-$API_URL}
-          SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-$ANON_KEY}
-          " > dotenv.frontend
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_STAGING_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_STAGING_ANON_KEY }}
-
       - name: Generate build
         run: dart run build_runner build
 
