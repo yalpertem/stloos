@@ -44,6 +44,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> images = [];
   bool isLoading = true;
   String? error;
+  
+  int currentPage = 1;
+  final int pageSize = 5;
+  int totalImages = 0;
+  int get totalPages => (totalImages / pageSize).ceil();
 
   @override
   void initState() {
@@ -53,13 +58,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _loadImages() async {
     try {
+      // Get total count for pagination
+      final countResponse = await Supabase.instance.client
+          .from('stloos_images')
+          .select('*')
+          .count(CountOption.exact);
+      
+      // Get paginated images
+      final startIndex = (currentPage - 1) * pageSize;
+      final endIndex = startIndex + pageSize - 1;
+      
       final response = await Supabase.instance.client
           .from('stloos_images')
           .select('*')
-          .order('created_at');
+          .order('created_at')
+          .range(startIndex, endIndex);
       
       setState(() {
         images = List<Map<String, dynamic>>.from(response);
+        totalImages = countResponse.count;
         isLoading = false;
       });
     } catch (e) {
@@ -68,6 +85,57 @@ class _MyHomePageState extends State<MyHomePage> {
         isLoading = false;
       });
     }
+  }
+
+  void _changePage(int newPage) {
+    if (newPage >= 1 && newPage <= totalPages && newPage != currentPage) {
+      setState(() {
+        currentPage = newPage;
+        isLoading = true;
+        error = null;
+      });
+      _loadImages();
+    }
+  }
+
+  String _formatDate(String? dateString) {
+    if (dateString == null) return 'Unknown';
+    try {
+      final date = DateTime.parse(dateString);
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
+  Widget _buildPaginationControls() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(totalPages, (index) {
+          final pageNumber = index + 1;
+          return GestureDetector(
+            onTap: () => _changePage(pageNumber),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: currentPage == pageNumber ? Colors.green : Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                pageNumber.toString(),
+                style: TextStyle(
+                  color: currentPage == pageNumber ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
   }
 
   @override
@@ -145,48 +213,66 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        children: images.map((image) {
-          return Column(
-            children: [
-              Image.network(
-                image['url'],
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return SizedBox(
-                    height: 200,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: images.map((image) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.network(
+                      image['url'],
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.broken_image, size: 64),
+                                Text('Failed to load image'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Created: ${_formatDate(image['created_at'])}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 200,
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.broken_image, size: 64),
-                          Text('Failed to load image'),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-            ],
-          );
-        }).toList(),
-      ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        if (totalPages > 1) _buildPaginationControls(),
+      ],
     );
   }
 }

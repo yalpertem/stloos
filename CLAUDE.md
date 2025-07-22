@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Flutter mobile application called "shittheyleaveonourstreets" - a simple image display app that shows three static images in a scrollable interface. The app was created with FlutLab and follows standard Flutter project structure.
+This is a Flutter mobile application called "shittheyleaveonourstreets" - an image display app that shows paginated images from a Supabase database. The app features pagination controls and minimal metadata display. Currently focused on iOS development.
 
 ## Development Commands
 
@@ -15,14 +15,14 @@ flutter run
 
 ### Building
 ```bash
-# Android
+# iOS (primary target platform)
+flutter build ios
+
+# Android (not currently in use)
 flutter build apk
 flutter build appbundle
 
-# iOS
-flutter build ios
-
-# Web
+# Web (not currently in use)
 flutter build web
 ```
 
@@ -111,24 +111,29 @@ pre-commit run --all-files
 ## Architecture
 
 ### Project Structure
-- `lib/main.dart` - Single entry point containing the entire app logic
-- `assets/` - Contains three JPEG images (image1.jpeg, image2.jpeg, image3.jpeg)
+- `lib/main.dart` - Single entry point containing the entire app logic with pagination
+- `assets/` - Contains 12 JPEG images (image1.jpeg through image12.jpeg)
+- `supabase/migrations/` - Database migration files with sample image data
 - `android/` - Android-specific configuration and build files
-- `ios/` - iOS-specific configuration and build files
+- `ios/` - iOS-specific configuration and build files (primary target)
 - `web/` - Web platform assets and configuration
 
 ### App Architecture
 The app uses a simple single-file architecture:
 - `MyApp` - Root MaterialApp widget with green theme
-- `MyHomePage` - Main screen displaying title and scrollable image list
-- No state management, routing, or external dependencies beyond Flutter SDK
+- `MyHomePage` - Main screen with paginated image list and navigation controls
+- Supabase integration for database-driven image loading
+- Pagination with 5 images per page
+- Minimal metadata display showing created_at dates
 
 ### Key Configuration
 - Flutter SDK: ^3.0.0
-- Uses Material Design
-- Target platforms: Android, iOS, Web
+- Uses Material Design with green theme
+- Primary target platform: iOS
+- Supabase Flutter integration for database connectivity
 - Static assets declared in pubspec.yaml
 - Flutter lints enabled for code quality
+- Page size: 5 images per page
 
 ### Build Configuration
 - Android: Uses Kotlin, targets API levels defined in build.gradle.kts
