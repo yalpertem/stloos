@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>method</key>
-    <string>app-store</string>
+    <string>app-store-connect</string>
+    <key>teamID</key>
+    <string>H9XZUWW22W</string>
     <key>uploadBitcode</key>
     <false/>
     <key>compileBitcode</key>
@@ -11,15 +13,6 @@
     <key>uploadSymbols</key>
     <true/>
     <key>signingStyle</key>
-    <string>manual</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>com.yalpertem.stloos</key>
-        <string>match AppStore com.yalpertem.stloos</string>
-    </dict>
-    <key>signingCertificate</key>
-    <string>iPhone Distribution</string>
-    <key>teamID</key>
-    <string>H9XZUWW22W</string>
+    <string>automatic</string>
 </dict>
 </plist>
