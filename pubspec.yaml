@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^2.8.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +27,5 @@ flutter:
     - assets/image1.jpeg
     - assets/image2.jpeg
     - assets/image3.jpeg
+    - .env.local
+    - .env.production

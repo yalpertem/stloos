@@ -58,18 +58,39 @@ supabase stop
 supabase start
 ```
 
-### Network Configuration
-The app is configured to work on both local (web/desktop) and mobile devices:
+### Environment Configuration
+The app uses environment variables for Supabase configuration to support different environments:
 
-- **Web/Desktop**: Uses `127.0.0.1:54321` (localhost)
-- **Mobile devices**: Uses `192.168.0.192:54321` (network IP)
+- **Local Development**: Uses `.env.local` file with local Supabase instance
+- **Production**: Uses `.env.production` file with production Supabase values
 
-**Important**: If your Mac's IP address changes, update the `_networkHost` constant in `lib/config.dart`.
+#### Environment Files
+- `.env.local` - Local development environment (contains localhost URLs and demo keys)
+- `.env.production` - Production environment template (update with your production values)
 
-To find your current IP address:
+#### Required Environment Variables
+- `SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous/public key
+
+#### Local Development Setup
+For local development with Supabase local instance:
 ```bash
-ifconfig | grep "inet " | grep -v 127.0.0.1
+# .env.local (already configured)
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=your-local-anon-key
 ```
+
+#### Production Setup
+Update `.env.production` with your production Supabase values:
+```bash
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-production-anon-key
+```
+
+#### GitHub Actions Deployment
+For production deployment via GitHub Actions, add these secrets to your repository:
+- `SUPABASE_URL` - Your production Supabase project URL
+- `SUPABASE_ANON_KEY` - Your production Supabase anonymous key
 
 ### SQL Linting and Formatting
 ```bash

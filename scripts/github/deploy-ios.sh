@@ -37,8 +37,12 @@ cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 mkdir private_keys
 echo -n "$STORE_PRIVATE_KEY" | base64 --decode -o private_keys/AuthKey_$APP_STORE_CONNECT_API_KEY.p8
 
-# Build IOS Release
-flutter build ipa --export-options-plist=ios/ExportOptions.plist
+# Create production environment file with secrets
+echo "SUPABASE_URL=$SUPABASE_URL" > .env.production
+echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env.production
+
+# Build IOS Release (production build)
+flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
 # Publish to Apple Store Connect
 xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiKey $APP_STORE_CONNECT_API_KEY --apiIssuer $APP_STORE_CONNECT_ISSUER_ID

@@ -76,3 +76,7 @@ __pycache__/
 .venv
 env/
 venv/
+
+# Environment files - exclude from version control
+.env*
+!.env.production
