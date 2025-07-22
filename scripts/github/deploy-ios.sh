@@ -44,9 +44,19 @@ security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD"
 echo "Checking imported certificates:"
 security find-identity -v -p codesigning $KEYCHAIN_PATH
 
+# Check system-wide certificates too
+echo "Checking system certificates:"
+security find-identity -v -p codesigning
+
 # apply provisioning profile
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+# Verify provisioning profile
+echo "Checking provisioning profile:"
+ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+echo "Provisioning profile details:"
+security cms -D -i $PP_PATH
 
 # create store connect private key
 mkdir private_keys
@@ -55,8 +65,16 @@ echo -n "$STORE_PRIVATE_KEY" | base64 --decode -o private_keys/AuthKey_$APP_STOR
 # Get Flutter dependencies
 flutter pub get
 
-# Build IOS Release
-flutter build ipa --export-options-plist=ios/ExportOptions.plist
+# Check Xcode project signing settings
+echo "Checking Xcode project configuration:"
+cat ios/Runner.xcodeproj/project.pbxproj | grep -A 5 -B 5 "CODE_SIGN"
+
+echo "Current keychain list:"
+security list-keychains -d user
+
+# Build IOS Release with verbose output
+echo "Building IPA..."
+flutter build ipa --export-options-plist=ios/ExportOptions.plist --verbose
 
 # Check if IPA was created
 if [ ! -f build/ios/ipa/*.ipa ]; then
