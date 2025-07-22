@@ -127,14 +127,7 @@ jobs:
               <key>uploadSymbols</key>
               <true/>
               <key>signingStyle</key>
-              <string>manual</string>
-              <key>signingCertificate</key>
-              <string>Apple Development</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>com.yalpertem.stloos</key>
-                  <string>${{ steps.get_profile.outputs.profile_uuid }}</string>
-              </dict>
+              <string>automatic</string>
           </dict>
           </plist>
           EOF
@@ -146,7 +139,8 @@ jobs:
                      -archivePath build/Runner.xcarchive \
                      -exportPath build \
                      -exportOptionsPlist DynamicExportOptions.plist \
-                     -allowProvisioningUpdates
+                     -allowProvisioningUpdates \
+                     DEVELOPMENT_TEAM=H9XZUWW22W
 
       - name: Upload to App Store Connect
         uses: Apple-Actions/upload-testflight-build@v1
