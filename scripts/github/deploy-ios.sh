@@ -30,7 +30,7 @@ echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
 echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
 # create temporary keychain
-security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH || true
 security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
 security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
 
@@ -39,6 +39,10 @@ security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KE
 security list-keychain -d user -s $KEYCHAIN_PATH
 security default-keychain -d user -s "$KEYCHAIN_PATH"
 security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+# Verify certificate import
+echo "Checking imported certificates:"
+security find-identity -v -p codesigning $KEYCHAIN_PATH
 
 # apply provisioning profile
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -53,6 +57,14 @@ flutter pub get
 
 # Build IOS Release
 flutter build ipa --export-options-plist=ios/ExportOptions.plist
+
+# Check if IPA was created
+if [ ! -f build/ios/ipa/*.ipa ]; then
+    echo "Error: IPA file not found. Build may have failed."
+    echo "Checking build directory structure:"
+    ls -la build/ios/
+    exit 1
+fi
 
 # Publish to Apple Store Connect
 xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiKey $APP_STORE_CONNECT_API_KEY --apiIssuer $APP_STORE_CONNECT_ISSUER_ID
