@@ -13,6 +13,13 @@
     <key>uploadSymbols</key>
     <true/>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
+    <key>signingCertificate</key>
+    <string>Apple Distribution</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.yalpertem.stloos</key>
+        <string>a7326452-a57c-4482-b96c-7e0f81dc8ee9</string>
+    </dict>
 </dict>
 </plist>
