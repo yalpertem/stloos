@@ -1,29 +1,34 @@
-name: iOS Deploy to App Store
+name: Continuous Delivery Frontend Macos
 
 on:
   workflow_dispatch:
   push:
-    tags: 
-      - v*
+    tags: v*
 
 jobs:
   deploy:
     name: Deploy iOS
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: "3.19.0"
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Create Client Dotenv
+        run: |
+          echo "
+          SUPABASE_URL=${SUPABASE_URL:-$API_URL}
+          SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-$ANON_KEY}
+          " > dotenv.frontend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_STAGING_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_STAGING_ANON_KEY }}
 
-      - name: Deploy iOS
+      - name: Generate build
+        run: dart run build_runner build
+
+      - name: Deploy IOS
         run: ./scripts/github/deploy-ios.sh
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_BASE64 }}
