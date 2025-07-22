@@ -15,6 +15,9 @@ jobs:
         with:
           channel: stable
 
+      - name: Generate build
+        run: dart run build_runner build
+
       - name: Deploy IOS
         run: ./scripts/github/deploy-ios.sh
         env:
