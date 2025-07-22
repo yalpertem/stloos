@@ -26,7 +26,7 @@ security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
 # import certificate to keychain
 security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
 security list-keychain -d user -s $KEYCHAIN_PATH
-security default-keychain -d user -s "$KEYCHAIN_NAME"
+security default-keychain -d user -s "$KEYCHAIN_PATH"
 security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
 # apply provisioning profile
@@ -36,6 +36,9 @@ cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 # create store connect private key
 mkdir private_keys
 echo -n "$STORE_PRIVATE_KEY" | base64 --decode -o private_keys/AuthKey_$APP_STORE_CONNECT_API_KEY.p8
+
+# Get Flutter dependencies
+flutter pub get
 
 # Build IOS Release
 flutter build ipa --export-options-plist=ios/ExportOptions.plist
