@@ -76,16 +76,6 @@ This is the Key ID from the API key you created in step 5.
 
 **Format:** UUID (e.g., `12345678-1234-1234-1234-123456789012`)
 
-### 8. `SUPABASE_STAGING_URL` (Optional)
-
-Your Supabase project URL for staging environment.
-
-**Format:** `https://[project-id].supabase.co`
-
-### 9. `SUPABASE_STAGING_ANON_KEY` (Optional)
-
-Your Supabase anonymous key for staging environment.
-
 ## Adding Secrets to GitHub
 
 1. Go to your repository on GitHub
