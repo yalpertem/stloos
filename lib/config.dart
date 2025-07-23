@@ -12,4 +12,7 @@ class AppConfig {
   
   /// Returns the image base URL from environment
   static String get imageBaseUrl => Env.imageBaseUrl;
+  
+  /// Returns the Google OAuth client ID from environment
+  static String get googleClientId => Env.googleClientId;
 }
